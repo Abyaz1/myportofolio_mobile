@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/menu.dart';
 
+// Fungsi utama bootstrap aplikasi Flutter
 void main() {
   runApp(const MyApp());
 }
 
+// Root widget konfigurasi tema dan navigasi aplikasi
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
