@@ -171,6 +171,16 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        // Memunculkan notifikasi SnackBar berhasil disimpan
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            const SnackBar(
+                              content: Text("Proyek baru berhasil disimpan!"),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+
                         // Menampilkan pop-up dialog konfirmasi data proyek
                         showDialog(
                           context: context,
@@ -202,6 +212,16 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                             );
                           },
                         );
+                      } else {
+                        // Memunculkan notifikasi SnackBar peringatan jika form tidak valid
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(
+                            const SnackBar(
+                              content: Text("Terdapat isian yang belum valid, mohon periksa kembali!"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
                       }
                     },
                     child: const Text(

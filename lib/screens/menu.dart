@@ -15,6 +15,7 @@ class MyHomePage extends StatelessWidget {
   final List<ItemHomepage> items = const [
     ItemHomepage("Lihat Proyek", Icons.folder, Colors.blue),
     ItemHomepage("Tambah Proyek", Icons.add_circle, Colors.green),
+    ItemHomepage("Tambah Pengalaman", Icons.work, Colors.orange),
     ItemHomepage("Logout", Icons.logout, Colors.red),
   ];
 
@@ -35,8 +36,8 @@ class MyHomePage extends StatelessWidget {
       ),
       // Drawer navigasi samping aplikasi
       drawer: const LeftDrawer(),
-      // Area badan halaman utama
-      body: Padding(
+      // Area badan halaman utama yang dapat digulir
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,9 +66,10 @@ class MyHomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Tata letak kisi 3 kolom untuk tombol aksi
+                  // Tata letak kisi untuk tombol aksi portofolio
                   GridView.count(
-                    primary: true,
+                    primary: false,
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(20),
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,

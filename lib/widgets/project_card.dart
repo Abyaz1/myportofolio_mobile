@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 
 // Model data untuk kartu menu aksi pada halaman utama
@@ -55,6 +56,16 @@ class ItemCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => const ProjectFormPage(),
+              ),
+            );
+          }
+
+          // Navigasi ke halaman formulir tambah pengalaman jika tombol ditekan
+          if (item.name == "Tambah Pengalaman") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ExperienceFormPage(),
               ),
             );
           }
