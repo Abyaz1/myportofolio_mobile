@@ -12,6 +12,7 @@ Aplikasi mobile portofolio pribadi yang dirancang menggunakan framework Flutter 
 - [Struktur Direktori](#struktur-direktori)
 - [Panduan Setup & Instalasi](#panduan-setup--instalasi)
 - [Tugas 7](#tugas-7)
+- [Tugas 8](#tugas-8)
 - [Progress Mingguan](#progress-mingguan)
 - [AI Disclosure](#ai-disclosure)
 - [Kontak](#kontak)
@@ -26,16 +27,20 @@ Proyek ini adalah aplikasi mobile portofolio pribadi yang dibuat menggunakan fra
 2. Menu Aksi Portofolio (`ItemCard`):
    Menampilkan menu aksi utama dalam tata letak kisi (*grid layout* 3 kolom):
    - Lihat Proyek: Tombol dengan latar belakang biru (`Colors.blue`) dan ikon folder.
-   - Tambah Proyek: Tombol dengan latar belakang hijau (`Colors.green`) dan ikon tambah.
+   - Tambah Proyek: Tombol dengan latar belakang hijau (`Colors.green`) dan ikon tambah untuk membuka formulir proyek baru.
+   - Tambah Pengalaman: Tombol dengan latar belakang oranye (`Colors.orange`) dan ikon tas kerja untuk membuka formulir pengalaman baru.
    - Logout: Tombol dengan latar belakang merah (`Colors.red`) dan ikon keluar.
-3. Aspek Kreativitas & Peningkatan Interaktivitas (`Custom SnackBar`):
-   Sebagai pemenuhan aspek kreativitas untuk mencapai nilai maksimal, `SnackBar` ditingkatkan menjadi responsif dan selaras secara visual:
-   - Warna latar belakang `SnackBar` otomatis menyesuaikan dengan warna tombol kartu yang ditekan (`backgroundColor: item.color`).
-   - Menampilkan ikon tombol yang sesuai di dalam baris notifikasi pesan.
-   - Dilengkapi tombol aksi interaktif `SnackBarAction(label: 'Tutup')` untuk menutup pesan secara instan.
-4. Struktur Kode Modular & Bersih:
-   - Pemisahan berkas bootstrap (`lib/main.dart`) dan halaman utama (`lib/menu.dart`).
-   - Penggunaan model `ItemHomepage` yang efisien dengan parameter warna modular tanpa logika percabangan berulang.
+3. Drawer Navigasi Samping (`LeftDrawer`):
+   Menyediakan menu samping global yang konsisten di setiap halaman untuk berpindah antara halaman utama (Home), formulir tambah proyek (Add Project), dan formulir tambah pengalaman (Add Experience).
+4. Formulir Tambah Proyek (`ProjectFormPage`):
+   Formulir input data proyek baru dengan field nama proyek, deskripsi (*multiline*), kategori (*dropdown*), teknologi, dan URL tautan proyek, lengkap dengan validasi dan pop-up dialog ringkasan.
+5. Formulir Tambah Pengalaman Baru (`ExperienceFormPage`):
+   Formulir input data riwayat pengalaman kerja atau organisasi dengan field posisi, instansi/perusahaan, tipe pengalaman (*dropdown*), pemilih tanggal interaktif (`showDatePicker()`), sakelar (*switch*) status "Masih Berjalan", serta deskripsi tanggung jawab, lengkap dengan validasi ketat dan pop-up dialog ringkasan data.
+6. Aspek Kreativitas & Peningkatan Interaktivitas:
+   - `Custom SnackBar`: Responsif dengan warna latar belakang selaras kartu tombol, ikon representatif, dan tombol aksi `SnackBarAction(label: 'Tutup')`.
+   - Interaktivitas Formulir Pengalaman: Integrasi pemilih tanggal (`showDatePicker()`), sakelar dinamis "Masih Berjalan" yang otomatis menonaktifkan input tanggal selesai dan menggantinya dengan "Sekarang (Present)", serta validasi urutan kronologi tanggal.
+7. Struktur Kode Modular & Bersih:
+   - Pemisahan berkas halaman ke direktori `lib/screens/` dan komponen widget ke direktori `lib/widgets/`.
    - Seluruh komentar dalam kode ditulis secara rapi menggunakan komentar satu baris (`//`).
    - Lulus analisis statis `flutter analyze` dengan status *No issues found!*.
 
@@ -43,15 +48,21 @@ Proyek ini adalah aplikasi mobile portofolio pribadi yang dibuat menggunakan fra
 
 ```text
 myportofolio_mobile/
-├── android/             # Konfigurasi dan berkas build native platform Android
-├── ios/                 # Konfigurasi dan berkas build native platform iOS
+├── android/                 # Konfigurasi dan berkas build native platform Android
+├── ios/                     # Konfigurasi dan berkas build native platform iOS
 ├── lib/
-│   ├── main.dart        # Entry point aplikasi & konfigurasi tema global
-│   └── menu.dart        # Halaman utama (MyHomePage), InfoCard, & ItemCard
+│   ├── main.dart            # Entry point aplikasi & konfigurasi tema global
+│   ├── screens/             # Halaman-halaman aplikasi
+│   │   ├── menu.dart        # Halaman utama portofolio (MyHomePage & InfoCard)
+│   │   ├── project_form.dart # Halaman formulir input proyek baru
+│   │   └── experience_form.dart # Halaman formulir input riwayat pengalaman baru
+│   └── widgets/             # Komponen widget modular & reusable
+│       ├── left_drawer.dart # Menu drawer navigasi samping aplikasi
+│       └── project_card.dart # Model ItemHomepage & widget ItemCard
 ├── test/
-│   └── widget_test.dart # Berkas pengujian otomatis widget Flutter
-├── pubspec.yaml         # Manajemen dependensi pustaka, font, dan aset
-└── README.md            # Dokumentasi proyek & laporan refleksi tugas
+│   └── widget_test.dart     # Berkas pengujian otomatis widget Flutter
+├── pubspec.yaml             # Manajemen dependensi pustaka, font, dan aset
+└── README.md                # Dokumentasi proyek & laporan refleksi tugas
 ```
 
 ## Panduan Setup & Instalasi
@@ -175,6 +186,48 @@ Kapan harus melakukan hot restart atau full restart:
   2. Perubahan kode native pada platform Android (`android/`), iOS (`ios/`), atau Windows/macOS/Linux.
   3. Modifikasi konfigurasi build native (seperti `AndroidManifest.xml` atau `build.gradle`).
 
+## Tugas 8
+
+### 1. Jelaskan perbedaan antara `Navigator.push()`, `Navigator.pushReplacement()`, dan `Navigator.pop()`. Metode apa yang digunakan untuk membuka formulir dari kartu aksi? Jelaskan juga bagaimana opsi Home di drawer membawa pengguna kembali ke halaman utama.
+
+Perbedaan metode navigasi:
+- `Navigator.push()`: Menumpuk route baru di atas route yang sedang aktif (stack bertambah). Route lama dipertahankan di bawahnya sehingga pengguna dapat kembali dengan tombol *back*.
+- `Navigator.pushReplacement()`: Menghapus route yang sedang aktif dan menggantikannya dengan route baru, mencegah tombol *back* kembali ke layar sebelumnya.
+- `Navigator.pop()`: Mengeluarkan route teratas untuk kembali ke layar sebelumnya dalam stack (seperti menutup drawer atau dialog).
+
+Penerapan pada kartu aksi & drawer:
+- Pada kartu aksi (`ItemCard`), digunakan `Navigator.push()` agar pengguna dapat kembali ke halaman utama sewaktu-waktu menggunakan tombol *back*.
+- Pada opsi Home di widget `LeftDrawer`, digunakan `Navigator.pushReplacement()` menuju `MyHomePage` untuk membuang halaman formulir aktif dan mencegah terjadinya penumpukan halaman berulang (*infinite stack*) di memori.
+
+### 2. Bagaimana susunan Scaffold, AppBar, dan Drawer membantu menjaga struktur halaman tetap konsisten? Berikan satu contoh penggunaan warna tema portofolio di lebih dari satu halaman.
+
+Konsistensi tata letak:
+`Scaffold` menyediakan kerangka struktur layout standar Material Design, `AppBar` menyajikan bilah atas yang seragam dengan tombol menu drawer, dan `LeftDrawer` dipasang sebagai komponen navigasi modular di setiap halaman (`menu.dart`, `project_form.dart`, `experience_form.dart`) untuk menjamin konsistensi navigasi di seluruh aplikasi.
+
+Penerapan warna tema:
+Warna tema primer (`Colors.indigo`) digunakan konsisten pada:
+1. Latar belakang `AppBar` di seluruh halaman.
+2. Dekorasi latar belakang `DrawerHeader` pada `LeftDrawer`.
+3. Tombol aksi Simpan (`ElevatedButton`) pada formulir proyek dan pengalaman.
+
+### 3. Mengapa tata letak tersebut dipilih untuk formulir? Jelaskan peran widget pengatur jarak dan widget penggulir ketika ruang layar terbatas.
+
+Alasan tata letak:
+Formulir menggunakan kombinasi `SingleChildScrollView` -> `Form` -> `Column` karena susunan linier vertikal ini paling ergonomis dan teratur untuk pengisian data bertahap dari atas ke bawah pada layar ponsel.
+- Peran pengatur jarak: `Padding` dan `SizedBox` memberi ruang kosong dan pembatas jarak yang proporsional antar-elemen input agar tidak berdempetan atau menempel ke tepi layar.
+- Peran widget penggulir: `SingleChildScrollView` membuat area formulir dapat digulir, sehingga mencegah galat *RenderFlex overflowed* saat ruang layar menyempit akibat kemunculan keyboard virtual (*soft keyboard*).
+
+### 4. Apa peran GlobalKey<FormState>, validator, dan validate() saat tombol Simpan ditekan? Berikan satu contoh nilai yang ditolak oleh validasi dan jelaskan mengapa memilih jenis input atau papan ketik saja belum cukup.
+
+Mekanisme validasi form:
+- `GlobalKey<FormState>`: Kunci unik untuk mengakses dan mengelola *state* internal dari widget `Form`.
+- `validator`: Fungsi logika pada tiap field yang memeriksa validitas nilai input dan mengembalikan pesan kesalahan jika data tidak sesuai.
+- `validate()`: Metode yang dipanggil lewat `_formKey.currentState!.validate()`. Saat tombol Simpan ditekan, metode ini menjalankan seluruh callback validator secara bersamaan, menampilkan pesan error jika ada yang tidak sah (mengembalikan `false`), dan mengembalikan `true` jika seluruh isian valid.
+
+Contoh nilai ditolak & batasan tipe keyboard:
+- Nilai ditolak: Input hanya spasi `"   "` ditolak dengan validasi `value.trim().isEmpty`, deskripsi kurang dari 10 karakter, serta tanggal selesai yang mendahului tanggal mulai.
+- Batasan keyboard: Jenis keyboard hanya memberikan petunjuk tampilan antarmuka (*input hint*), tetapi tidak dapat memvalidasi field kosong, mencegah *paste* teks dari clipboard, maupun memeriksa logika bisnis. Oleh karena itu, validasi programatik tetap wajib digunakan.
+
 ## Progress Mingguan
 
 Progres pengembangan proyek aplikasi mobile portofolio pribadi berdasarkan riwayat commit dan rincian pengerjaan tugas:
@@ -190,25 +243,32 @@ Progres pengembangan proyek aplikasi mobile portofolio pribadi berdasarkan riway
 - Pengujian & Analisis Kode: Menulis dan memperbarui skenario uji pada `test/widget_test.dart` dan memastikan kelulusan analisis statis `flutter analyze` (*No issues found!*).
 - Dokumentasi & Refleksi: Menuliskan jawaban pertanyaan reflektif Tugas 7 serta pengungkapan AI pada `README.md`.
 
+### Minggu 8 - Tutorial 09 & Tugas 8: Navigation, Layouts, Forms, and Input Elements
+- Mereorganisasi arsitektur proyek ke direktori modular `lib/screens/` dan `lib/widgets/`.
+- Membangun drawer navigasi `LeftDrawer` dengan routing `pushReplacement` ke halaman Home, Add Project, dan Add Experience.
+- Membuat formulir input proyek (`ProjectFormPage`) dan formulir pengalaman baru (`ExperienceFormPage`) lengkap dengan pemilih tanggal (`showDatePicker()`), sakelar status aktif, validasi menyeluruh, serta pop-up `AlertDialog`.
+- Menambahkan kartu aksi baru pada menu utama, menerapkan navigasi `Navigator.push()`, dan menambahkan pembungkus `SingleChildScrollView` untuk mencegah *overflow*.
+- Memastikan kode lulus uji analisis statis `flutter analyze` dan lulus pengujian `flutter test` 100%.
+
 ## AI Disclosure
 
 - Tools AI yang Digunakan: Google Gemini / Antigravity AI Assistant
 - Link Percakapan / Log AI: [https://share.gemini.google/Jf6VI5dbcuxF](https://share.gemini.google/Jf6VI5dbcuxF)
 - Ringkasan Bantuan AI:
-  - Memberikan penjelasan konseptual awal untuk pertanyaan reflektif seputar arsitektur Flutter (widget tree, constraints, BuildContext, siklus hot reload vs hot restart).
-  - Membantu validasi struktur awal model `ItemHomepage` dan refaktor `const constructor`.
-  - Membantu menyusun draf awal dokumentasi proyek dan penyelarasan struktur dengan repositori web.
+  - Memberikan penjelasan konseptual untuk pertanyaan reflektif seputar arsitektur navigasi Flutter (`Navigator.push`, `pushReplacement`, `pop`), layout form, dan mekanisme `GlobalKey<FormState>`.
+  - Membantu perancangan struktur awal formulir `ExperienceFormPage` beserta integrasi `showDatePicker()`.
 
 - Analisis Kritis Keterbatasan AI:
-  - Warna kartu tombol yang seragam: Kode awal yang disarankan AI menggunakan warna sekunder tema secara statis (`Theme.of(context).colorScheme.secondary`), sehingga ketiga tombol memiliki warna latar yang sama tanpa diferensiasi visual.
-  - Kegagalan uji otomatis bawaan: Template `test/widget_test.dart` bawaan masih menguji counter default Flutter dan data profil lama contoh tutorial, yang menyebabkan kegagalan uji (*test failure*).
-  - Komentar yang redundan: AI kerap menyisipkan komentar naratif yang panjang dan mengulang hal yang sudah jelas dari kode pada setiap widget.
+  - Ketiadaan perlindungan overflow pada halaman menu utama: Penambahan kartu aksi ke-4 pada `GridView` di dalam `Column` tanpa pembungkus `SingleChildScrollView` memicu galat layout `RenderFlex overflowed` saat pengujian widget dijalankan.
+  - Validasi input yang kurang menyeluruh: Saran form awal dari AI hanya memeriksa apakah string tidak kosong (`value.isEmpty`), tanpa mendeteksi string yang hanya terdiri dari karakter spasi (*whitespace*).
+  - Penanganan tanggal selesai: Kode awal AI tidak memvalidasi urutan kronologi tanggal, memungkinkan tanggal selesai dipilih lebih lampau dari tanggal mulai.
 
 - Perbaikan Manual yang Dilakukan:
-  - Menambahkan atribut `final Color color;` pada model `ItemHomepage` dan menetapkan warna yang berbeda dan kontras (`Colors.blue`, `Colors.green`, `Colors.red`) pada masing-masing item.
-  - Mengintegrasikan warna modular ke widget `Material` di `ItemCard` serta merancang *Custom SnackBar* interaktif dengan `Row`, ikon representatif, dan tombol `SnackBarAction`.
-  - Memperbarui skenario pengujian di `test/widget_test.dart` agar mencari "M. Naufal Abyaz Bawono" dan memverifikasi keberadaan tombol menu, mencapai kelulusan tes 100%.
-  - Menyederhanakan seluruh komentar kode menjadi komentar satu baris (`//`) yang bersih dan esensial sesuai prinsip *clean code*.
+  - Memperbaiki tata letak halaman utama di `lib/screens/menu.dart` dengan membungkus `body` menggunakan `SingleChildScrollView` dan mengatur `NeverScrollableScrollPhysics` pada `GridView`, sehingga mengeliminasi galat overflow sepenuhnya.
+  - Menambahkan sanitasi string `value.trim().isEmpty` pada seluruh validator untuk menolak input kosong berspasi.
+  - Mengembangkan logika validasi perbandingan tanggal `_endDate!.isBefore(_startDate!)` pada pemilih tanggal selesai di `ExperienceFormPage`.
+  - Menambahkan fitur UI/UX interaktif berupa `SwitchListTile` "Masih Berjalan" untuk mengelola kondisi pekerjaan aktif secara dinamis.
+  - Menyeragamkan seluruh komentar kode menjadi komentar satu baris (`//`) sesuai prinsip clean code.
 
 ## Kontak
 - Nama: M Naufal Abyaz Bawono
