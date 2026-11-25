@@ -85,9 +85,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
     return Scaffold(
       // AppBar dengan gaya visual konsisten tema indigo
       appBar: AppBar(
-        title: const Center(
-          child: Text('Add Experience Form'),
-        ),
+        title: const Center(child: Text('Add Experience Form')),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
@@ -160,10 +158,10 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                   ),
                   initialValue: _experienceType,
                   items: _types
-                      .map((type) => DropdownMenuItem(
-                            value: type,
-                            child: Text(type),
-                          ))
+                      .map(
+                        (type) =>
+                            DropdownMenuItem(value: type, child: Text(type)),
+                      )
                       .toList(),
                   onChanged: (String? newValue) {
                     setState(() {
@@ -251,7 +249,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                 child: TextFormField(
                   maxLines: 4,
                   decoration: InputDecoration(
-                    hintText: "Deskripsikan tanggung jawab utama dan pencapaian",
+                    hintText:
+                        "Deskripsikan tanggung jawab utama dan pencapaian",
                     labelText: "Deskripsi Pengalaman",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -280,8 +279,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStateProperty.all(Colors.indigo),
+                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -290,16 +288,16 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
                             const SnackBar(
-                              content: Text("Pengalaman baru berhasil disimpan!"),
+                              content: Text(
+                                "Pengalaman baru berhasil disimpan!",
+                              ),
                               backgroundColor: Colors.green,
                             ),
                           );
 
                         final String endDisplay = _isCurrent
                             ? "Sekarang (Present)"
-                            : (_endDate != null
-                                ? _formatDate(_endDate!)
-                                : "-");
+                            : (_endDate != null ? _formatDate(_endDate!) : "-");
 
                         // Menampilkan ringkasan isian formulir dalam AlertDialog
                         showDialog(
@@ -307,17 +305,18 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                           builder: (context) {
                             return AlertDialog(
                               title: const Text(
-                                  'Pengalaman berhasil ditambahkan!'),
+                                'Pengalaman berhasil ditambahkan!',
+                              ),
                               content: SingleChildScrollView(
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('Posisi: $_position'),
                                     Text('Instansi: $_company'),
                                     Text('Tipe: $_experienceType'),
                                     Text(
-                                        'Mulai: ${_startDate != null ? _formatDate(_startDate!) : "-"}'),
+                                      'Mulai: ${_startDate != null ? _formatDate(_startDate!) : "-"}',
+                                    ),
                                     Text('Selesai: $endDisplay'),
                                     Text('Deskripsi: $_description'),
                                   ],
@@ -348,7 +347,9 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
                             const SnackBar(
-                              content: Text("Terdapat isian yang belum valid, mohon periksa kembali!"),
+                              content: Text(
+                                "Terdapat isian yang belum valid, mohon periksa kembali!",
+                              ),
                               backgroundColor: Colors.red,
                             ),
                           );

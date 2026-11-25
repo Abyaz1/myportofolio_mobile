@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
+import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:provider/provider.dart';
 
 // Model data untuk kartu menu aksi pada halaman utama
 class ItemHomepage {
@@ -24,7 +28,7 @@ class ItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         // Menangani aksi tap pada kartu menu aksi
-        onTap: () {
+        onTap: () async {
           // Menampilkan custom SnackBar interaktif saat kartu ditekan
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -50,17 +54,27 @@ class ItemCard extends StatelessWidget {
               ),
             );
 
-          // Navigasi ke halaman formulir tambah proyek jika tombol ditekan
-          if (item.name == "Tambah Proyek") {
+          // Navigasi ke halaman daftar proyek publik
+          if (item.name == "Lihat Proyek") {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const ProjectFormPage(),
+                builder: (context) => const ProjectListScreen(),
               ),
             );
           }
 
-          // Navigasi ke halaman formulir tambah pengalaman jika tombol ditekan
+          // Navigasi ke halaman tambah proyek setelah verifikasi login
+          if (item.name == "Tambah Proyek") {
+            final ok = await ensureLoggedIn(context);
+            if (!context.mounted || !ok) return;
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProjectFormPage()),
+            );
+          }
+
+          // Navigasi ke halaman formulir tambah pengalaman
           if (item.name == "Tambah Pengalaman") {
             Navigator.push(
               context,
@@ -69,6 +83,32 @@ class ItemCard extends StatelessWidget {
               ),
             );
           }
+
+          // Menangani aksi logout ketika pengguna menekan kartu Logout
+          if (item.name == "Logout") {
+            final auth = context.read<AuthState>();
+            if (!auth.isLoggedIn) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text("Anda belum login."),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+              return;
+            }
+            await auth.logout();
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text("Logout berhasil!"),
+                  backgroundColor: Colors.green,
+                ),
+              );
+          }
         },
         child: Container(
           padding: const EdgeInsets.all(8),
@@ -76,11 +116,7 @@ class ItemCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
+                Icon(item.icon, color: Colors.white, size: 30.0),
                 const Padding(padding: EdgeInsets.all(3)),
                 Text(
                   item.name,
